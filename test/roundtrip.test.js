@@ -129,4 +129,13 @@ test('same batch loaded twice does not duplicate rows', async t => {
   assert.equal(typed[0].gps_accuracy, 4.9);
   assert.ok(typed[0].submitted_at instanceof Date);
   assert.ok(typed[0].started_at instanceof Date);
+
+  // Flattened answers are queryable: group/question became group__question.
+  const { rows: ans } = await db.query(
+    `SELECT answers->>'household__respondent_name' AS name,
+            answers->>'water__treatment'           AS treatment
+       FROM kobo_submissions WHERE submission_id = 481523`
+  );
+  assert.equal(ans[0].name, 'Amina O.');
+  assert.equal(ans[0].treatment, null, '"NaN" should have become NULL');
 });

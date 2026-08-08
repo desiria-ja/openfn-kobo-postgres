@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS kobo_submissions (
   longitude        double precision,
   altitude         double precision,
   gps_accuracy     double precision,
+  answers          jsonb       NOT NULL,
   raw_submission   jsonb       NOT NULL,
   synced_at        timestamptz NOT NULL DEFAULT now(),
   CONSTRAINT kobo_submissions_unique UNIQUE (xform_id_string, submission_id)

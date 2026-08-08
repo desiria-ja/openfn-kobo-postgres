@@ -114,8 +114,8 @@ export function toParentRow(submission, { formId } = {}) {
     started_at: toTimestamp(submission.start),
     ended_at: toTimestamp(submission.end),
     ...parseGeo(submission),
+    answers,
     raw_submission: submission,
-    _answers: answers, // not a column; exposed for callers that extend the schema
   };
 }
 
@@ -139,17 +139,16 @@ export function toAttachmentRows(submission, { formId } = {}) {
 
 /**
  * Whole batch -> { parents, attachments }, both de-duplicated on their unique
- * key. Kobo can return the same submission twice across paginated calls, and
- * Postgres rejects an INSERT ... ON CONFLICT that hits the same row twice in
- * one statement ("cannot affect row a second time") — so dedupe here.
+ * key. If a batch contains the same submission twice, Postgres rejects the
+ * statement ("ON CONFLICT DO UPDATE command cannot affect row a second time")
+ * rather than merging them — so dedupe before the insert, not in the database.
  */
 export function buildRows(submissions, options = {}) {
   const parents = new Map();
   const attachments = new Map();
 
   for (const submission of submissions ?? []) {
-    const parent = toParentRow(submission, options);
-    const { _answers, ...row } = parent;
+    const row = toParentRow(submission, options);
     parents.set(`${row.xform_id_string}|${row.submission_id}`, row);
 
     for (const a of toAttachmentRows(submission, options)) {

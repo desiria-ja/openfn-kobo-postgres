@@ -63,6 +63,17 @@ fn(state => {
     return empty;
   };
 
+  // group/question -> group__question, so the key is usable as a column name
+  const normalizeKey = k =>
+    String(k)
+      .replace(/^\/+|\/+$/g, '')
+      .replace(/\//g, '__')
+      .replace(/[^A-Za-z0-9_]/g, '_')
+      .replace(/_{3,}/g, '__')
+      .toLowerCase();
+
+  const HANDLED_OR_META = k => HANDLED.has(k);
+
   const submissions = Array.isArray(state.data) ? state.data : [];
   const parents = new Map();
   const attachments = new Map();
@@ -73,6 +84,16 @@ fn(state => {
     if (s._id === undefined || s._id === null) throw new Error('submission is missing _id');
 
     const id = Number(s._id);
+
+    // Flattened, normalized answers. Kept as jsonb so a form change can never
+    // break the insert; map them into real columns when you need to query them.
+    const answers = {};
+    for (const [k, v] of Object.entries(s)) {
+      if (HANDLED_OR_META(k)) continue;
+      if (Array.isArray(v) || (v && typeof v === 'object')) continue;
+      answers[normalizeKey(k)] = nullify(v);
+    }
+
     parents.set(`${xform}|${id}`, {
       xform_id_string: xform,
       submission_id: id,
@@ -81,6 +102,7 @@ fn(state => {
       started_at: toTimestamp(s.start),
       ended_at: toTimestamp(s.end),
       ...parseGeo(s),
+      answers,
       raw_submission: s,
     });
 

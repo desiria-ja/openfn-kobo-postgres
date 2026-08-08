@@ -54,6 +54,8 @@ test('fixture produces 2 parents and 6 attachments', () => {
   assert.equal(parents[0].submission_id, 481523);
   assert.equal(parents[0].xform_id_string, 'aXk9TnR4Qm5wVGc2');
   assert.equal(attachments[0].attachment_id, 9001);
+  assert.equal(parents[0].answers['household__respondent_name'], 'Amina O.');
+  assert.equal(parents[0].answers['water__treatment'], null);
 });
 
 test('duplicate submissions across pages are de-duplicated before the insert', () => {
