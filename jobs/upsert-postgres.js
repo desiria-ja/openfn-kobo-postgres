@@ -1,10 +1,11 @@
 /**
  * OpenFn job — Kobo submissions -> PostgreSQL (parent + attachments), idempotent.
  *
- *   openfn jobs/upsert-postgres.js -a postgresql -s tmp/kobo-output.json -o tmp/out.json
+ *   openfn jobs/upsert-postgres.js -a postgresql -s tmp/upsert-state.json -o tmp/out.json
  *
- * Expects `state.data` to be the array returned by
- * `getSubmissions(formId)` in the kobotoolbox adaptor.
+ * Expects `state.data` to be the array returned by `getSubmissions(formId)`
+ * and `state.configuration` to hold the PostgreSQL credential — see the README
+ * for how to combine the two.
  *
  * Run it twice with the same input: the unique constraints in sql/schema.sql
  * turn the second run into UPDATEs, so row counts stay flat.

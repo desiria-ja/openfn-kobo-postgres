@@ -1,0 +1,8 @@
+{
+  "configuration": {
+    "username": "your-kobo-username",
+    "password": "your-kobo-password-or-token",
+    "baseUrl": "https://kf.kobotoolbox.org",
+    "apiVersion": "v2"
+  }
+}

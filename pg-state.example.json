@@ -1,0 +1,11 @@
+{
+  "configuration": {
+    "host": "localhost",
+    "port": 5432,
+    "database": "kobo",
+    "user": "postgres",
+    "password": "postgres",
+    "ssl": false,
+    "allowSelfSignedCert": false
+  }
+}

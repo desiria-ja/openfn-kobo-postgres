@@ -13,7 +13,7 @@ The adaptors already have what you need: `@openfn/language-postgresql` ships
 [community forum](https://community.openfn.org/) isn't a missing function — it's
 the shape of the data in between:
 
-- Kobo's `group/question` keys aren't valid Postgres column names
+- Kobo's `group/question` keys need double-quoting to survive as column names
 - deciding what the idempotency key actually is
 - getting attachments into a child table without orphaning them
 - blank answers, `"NaN"`, and empty `start` timestamps failing at insert time
@@ -31,32 +31,54 @@ jobs/upsert-postgres.js     transform + upsert — self-contained, paste-able
 src/transform.js            the same transform as a plain module, so it can
                             be unit tested
 fixtures/submissions.json   two synthetic submissions with six attachments
+*-state.example.json        credential shapes for the two CLI steps; copies
+                            live in tmp/, which is gitignored
 test/                       unit tests + a round trip against a real Postgres
 ```
 
 ## Running it
 
+Each step needs the credential for **its own** adaptor, so the two steps take
+two different state files — the Kobo output can't be piped straight into the
+second job.
+
 ```bash
 psql "$DATABASE_URL" -f sql/schema.sql
 
-cp tmp/state.example.json tmp/state.json   # then fill in your credential
-openfn jobs/fetch-kobo.js      -a kobotoolbox -s tmp/state.json -o tmp/kobo.json
-openfn jobs/upsert-postgres.js -a postgresql  -s tmp/kobo.json  -o tmp/out.json
+mkdir -p tmp                                    # tmp/ is gitignored — credentials stay out of git
+cp kobo-state.example.json tmp/kobo-state.json  # fill in your Kobo credential
+cp pg-state.example.json   tmp/pg-state.json    # fill in your Postgres credential
+
+# 1. pull submissions (set your form id at the top of jobs/fetch-kobo.js)
+openfn jobs/fetch-kobo.js -a kobotoolbox -s tmp/kobo-state.json -o tmp/kobo.json
+
+# 2. carry the submissions over to the Postgres credential
+node -e "const f=require('fs'),m=(a,b)=>JSON.parse(f.readFileSync(a)); \
+  const s=m('tmp/pg-state.json'); s.data=m('tmp/kobo.json').data; \
+  f.writeFileSync('tmp/upsert-state.json',JSON.stringify(s,null,2))"
+
+# 3. transform + upsert
+openfn jobs/upsert-postgres.js -a postgresql -s tmp/upsert-state.json -o tmp/out.json
 ```
 
 `jobs/upsert-postgres.js` expects `state.data` to be the array that
-`getSubmissions(formId)` returns. Set your own form id at the top of
-`jobs/fetch-kobo.js`.
+`getSubmissions(formId)` returns, and `state.configuration` to be the
+[PostgreSQL credential](https://docs.openfn.org/adaptors/packages/postgresql-configuration-schema).
+Inside Lightning this step doesn't apply — each step carries its own credential
+already, and `state.data` is passed between them for you.
 
 Requires the [OpenFn CLI](https://docs.openfn.org/documentation/cli-usage)
 (`npm install -g @openfn/cli`) and a reachable PostgreSQL.
 
 ## Design notes
 
-**Answers are stored twice, on purpose.** `raw_submission jsonb` keeps the
-payload exactly as Kobo sent it. `answers jsonb` holds the same answers with
-`group/question` flattened to `group__question` and blanks turned into `null`,
-so they're ready to be selected out or mapped into real columns:
+**The payload is kept twice, on purpose.** `raw_submission jsonb` is exactly
+what Kobo sent, untouched. `answers jsonb` is the queryable copy: scalar fields
+only — arrays and objects such as `_attachments` and `_geolocation` are skipped,
+since they're handled elsewhere — with `group/question` flattened to
+`group__question` and blanks turned into `null`. Kobo's own scalar metadata
+(`_status`, `formhub/uuid`, and so on) rides along rather than being filtered,
+so it's a superset of the answers and not a curated list:
 
 ```sql
 SELECT answers->>'household__respondent_name' FROM kobo_submissions;

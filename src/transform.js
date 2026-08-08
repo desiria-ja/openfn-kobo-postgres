@@ -89,8 +89,9 @@ export function toTimestamp(value) {
 /**
  * One submission -> one parent row.
  *
- * `raw_submission` keeps the whole payload so nothing is lost when the form
- * changes shape. The flattened answer columns are additive on top of that.
+ * `raw_submission` keeps the whole payload untouched. `answers` holds the
+ * scalar fields only — arrays and objects are skipped — with `group/question`
+ * normalized and blanks nulled, ready to be selected out or mapped to columns.
  */
 export function toParentRow(submission, { formId } = {}) {
   const xform = nullify(submission._xform_id_string) ?? nullify(formId);
