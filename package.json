@@ -1,0 +1,14 @@
+{
+  "name": "openfn-kobo-postgres",
+  "version": "0.1.0",
+  "description": "Idempotent bulk upsert of KoboToolbox submissions into PostgreSQL, for OpenFn workflows.",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "devDependencies": {
+    "embedded-postgres": "18.4.0-beta.17",
+    "pg": "^8.13.1"
+  }
+}

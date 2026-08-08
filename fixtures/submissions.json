@@ -1,0 +1,83 @@
+[
+  {
+    "_id": 481523,
+    "_uuid": "5f1c9a0e-3d2b-4f7a-9c11-8b6f0a2d4e31",
+    "_xform_id_string": "aXk9TnR4Qm5wVGc2",
+    "_submission_time": "2026-04-12T08:31:07",
+    "formhub/uuid": "9c2f4a1b7d3e4f508a6b1c2d3e4f5061",
+    "start": "2026-04-12T08:14:52.113+03:00",
+    "end": "2026-04-12T08:30:41.902+03:00",
+    "household/respondent_name": "Amina O.",
+    "household/household_size": "6",
+    "household/has_latrine": "yes",
+    "household/notes": "   ",
+    "water/source_type": "borehole",
+    "water/distance_minutes": "25",
+    "water/treatment": "NaN",
+    "gps_point": "-1.286389 36.817223 1795.0 4.9",
+    "_geolocation": [-1.286389, 36.817223],
+    "meta/instanceID": "uuid:5f1c9a0e-3d2b-4f7a-9c11-8b6f0a2d4e31",
+    "_status": "submitted_via_web",
+    "_attachments": [
+      {
+        "id": 9001,
+        "filename": "amina/photo_house_1.jpg",
+        "mimetype": "image/jpeg",
+        "download_url": "https://kf.example.org/media/original?media_file=amina/photo_house_1.jpg",
+        "download_large_url": "https://kf.example.org/media/large?media_file=amina/photo_house_1.jpg"
+      },
+      {
+        "id": 9002,
+        "filename": "amina/photo_water_point.jpg",
+        "mimetype": "image/jpeg",
+        "download_url": "https://kf.example.org/media/original?media_file=amina/photo_water_point.jpg"
+      },
+      {
+        "id": 9003,
+        "filename": "amina/consent_signature.png",
+        "mimetype": "image/png",
+        "download_url": "https://kf.example.org/media/original?media_file=amina/consent_signature.png"
+      }
+    ]
+  },
+  {
+    "_id": 481524,
+    "_uuid": "7a3e5c2f-8b1d-4e60-a9f4-2c7d8e0b1a53",
+    "_xform_id_string": "aXk9TnR4Qm5wVGc2",
+    "_submission_time": "2026-04-12T09:02:44",
+    "formhub/uuid": "9c2f4a1b7d3e4f508a6b1c2d3e4f5061",
+    "start": "2026-04-12T08:49:03.221+03:00",
+    "end": "2026-04-12T09:01:58.774+03:00",
+    "household/respondent_name": "Joseph K.",
+    "household/household_size": "3",
+    "household/has_latrine": "no",
+    "household/notes": "Roof damaged after storm",
+    "water/source_type": "protected_spring",
+    "water/distance_minutes": "",
+    "water/treatment": "boiling",
+    "gps_point": "-1.292100 36.821900 1780.5 6.2",
+    "_geolocation": [-1.2921, 36.8219],
+    "meta/instanceID": "uuid:7a3e5c2f-8b1d-4e60-a9f4-2c7d8e0b1a53",
+    "_status": "submitted_via_web",
+    "_attachments": [
+      {
+        "id": 9004,
+        "filename": "joseph/photo_house_1.jpg",
+        "mimetype": "image/jpeg",
+        "download_url": "https://kf.example.org/media/original?media_file=joseph/photo_house_1.jpg"
+      },
+      {
+        "id": 9005,
+        "filename": "joseph/photo_roof.jpg",
+        "mimetype": "image/jpeg",
+        "download_url": "https://kf.example.org/media/original?media_file=joseph/photo_roof.jpg"
+      },
+      {
+        "id": 9006,
+        "filename": "joseph/consent_signature.png",
+        "mimetype": "image/png",
+        "download_url": "https://kf.example.org/media/original?media_file=joseph/consent_signature.png"
+      }
+    ]
+  }
+]
